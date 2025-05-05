@@ -9,7 +9,7 @@ suggest_top_crs(input, units = NULL, inherit_gcs = TRUE, output = "epsg")
 \arguments{
 \item{input}{An input spatial dataset of class \code{"sf"}, \code{"Spatial*"}, or \code{"RasterLayer"}.}
 
-\item{units}{(optional) The measurement units used by the returned coordinate reference system.}
+\item{units}{The measurement units of the coordinate systems in the returned results.  A character vector made up of a subset of  \code{"m"}, \code{"ft"}, or \code{"ft-us"}.}
 
 \item{inherit_gcs}{if \code{TRUE} (the default), the function will return a CRS suggestion that uses the geographic coordinate system of the input layer.  Otherwise, the output may use a different geographic coordinate system from the input.}
 

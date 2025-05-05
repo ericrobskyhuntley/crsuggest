@@ -2,6 +2,7 @@
 % Please edit documentation in R/crsuggest-package.R
 \docType{package}
 \name{crsuggest}
+\alias{crsuggest-package}
 \alias{crsuggest}
 \title{Get information on suggested coordinate reference systems for spatial data}
 \description{

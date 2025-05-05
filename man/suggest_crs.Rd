@@ -22,7 +22,7 @@ suggest_crs(
 
 \item{gcs}{(optional) The EPSG code for the corresponding geographic coordinate system of the results (e.g. \code{4326} for WGS 1984).}
 
-\item{units}{(optional) The measurement units of the coordinate systems in the returned results.  Can be one of \code{"m"}, \code{"ft"}, or \code{"ft-us"}.}
+\item{units}{(optional) The measurement units of the coordinate systems in the returned results.  A character vector made up of a subset of  \code{"m"}, \code{"ft"}, or \code{"ft-us"}.}
 
 \item{drop_na}{Whether or not to drop EPSG codes that do not appear in the PROJ database (and thus can't be used for CRS transformation). Defauts to \code{TRUE}; set to \code{FALSE} if you want to search all codes.}
 }

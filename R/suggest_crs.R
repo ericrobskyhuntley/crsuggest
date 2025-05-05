@@ -12,7 +12,7 @@
 #' @param type The output CRS type; defaults to \code{"projected"}.
 #' @param limit How many results to return; defaults to \code{10}.
 #' @param gcs (optional) The EPSG code for the corresponding geographic coordinate system of the results (e.g. \code{4326} for WGS 1984).
-#' @param units (optional) The measurement units of the coordinate systems in the returned results.  Can be one of \code{"m"}, \code{"ft"}, or \code{"ft-us"}.
+#' @param units (optional) The measurement units of the coordinate systems in the returned results.  A character vector made up of a subset of  \code{"m"}, \code{"ft"}, or \code{"ft-us"}.
 #' @param drop_na Whether or not to drop EPSG codes that do not appear in the PROJ database (and thus can't be used for CRS transformation). Defauts to \code{TRUE}; set to \code{FALSE} if you want to search all codes.
 #'
 #' @return A data frame with information about coordinate reference systems that could be suitably used for CRS transformation.
@@ -77,11 +77,11 @@ suggest_crs <- function(input, type = "projected",
   }
 
   if (!is.null(units)) {
-    if (!units %in% c("ft", "m", "us-ft")) {
+    if (!all(units %in% c("ft", "m", "us-ft"))) {
       stop("Units must be one of 'm', 'ft', or 'us-ft'")
     }
 
-    crs_type <- dplyr::filter(crs_type, crs_units == units)
+    crs_type <- dplyr::filter(crs_type, crs_units %in% units)
   }
 
   # Transform the input SF object to 32663 for overlay
@@ -133,13 +133,16 @@ suggest_crs <- function(input, type = "projected",
   if (nrow(crs_sub) == 0) {
     rows <- nrow(crs_sub)
     bufdist <- -250
-    while (rows == 0) {
+    iter <- 0
+    while (rows == 0 & iter >= 5) {
       new_buf <- st_buffer(sf_poly, bufdist)
       crs_sub <- crs_type[new_buf, ]
       rows <- nrow(crs_sub)
       bufdist <- bufdist / 2
     }
-
+    if (rows == 0) {
+      stop("No Matching CRS found. Try changing units (for example, 'us-ft' to 'ft'.")
+    }
   }
 
   # Simplify the polygon if it is too large (>500 vertices)
@@ -197,7 +200,7 @@ suggest_crs <- function(input, type = "projected",
 #' Return the EPSG code or proj4string syntax for the top-ranking projected coordinate reference system returned by \code{suggest_crs()}.  This function should be used with caution and is recommended for interactive work rather than in production data pipelines.
 #'
 #' @param input An input spatial dataset of class \code{"sf"}, \code{"Spatial*"}, or \code{"RasterLayer"}.
-#' @param units (optional) The measurement units used by the returned coordinate reference system.
+#' @param units The measurement units of the coordinate systems in the returned results.  A character vector made up of a subset of  \code{"m"}, \code{"ft"}, or \code{"ft-us"}.
 #' @param inherit_gcs if \code{TRUE} (the default), the function will return a CRS suggestion that uses the geographic coordinate system of the input layer.  Otherwise, the output may use a different geographic coordinate system from the input.
 #' @param output one of \code{"epsg"}, for the EPSG code, or \code{"proj4string"}, for the proj4string syntax.
 #'
