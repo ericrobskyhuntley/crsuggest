@@ -139,6 +139,7 @@ suggest_crs <- function(input, type = "projected",
       crs_sub <- crs_type[new_buf, ]
       rows <- nrow(crs_sub)
       bufdist <- bufdist / 2
+      iter <- iter + 1
     }
     if (rows == 0) {
       stop("No Matching CRS found. Try changing units (for example, 'us-ft' to 'ft'.")
